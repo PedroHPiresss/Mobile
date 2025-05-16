@@ -72,7 +72,7 @@ class _PaginaInformacoesPessoaisState extends State<PaginaInformacoesPessoais> {
                   },
                   child: Text('Vermelho'),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.red, // Cor do botão vermelho
+                    backgroundColor: Colors.red, // Cor do botão vermelho
                   ),
                 ),
                 ElevatedButton(
@@ -83,7 +83,7 @@ class _PaginaInformacoesPessoaisState extends State<PaginaInformacoesPessoais> {
                   },
                   child: Text('Azul'),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue, // Cor do botão azul
+                    backgroundColor: Colors.blue, // Cor do botão azul
                   ),
                 ),
               ],
