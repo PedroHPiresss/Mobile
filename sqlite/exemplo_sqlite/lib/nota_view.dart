@@ -48,26 +48,27 @@ class _NotasViewState extends State<NotaView>{
     Nota notaAtualizada = Nota(id: nota.id, titulo: "${nota.titulo} (editado)", conteudo: nota.conteudo);
     await _dbHelper.updateNota(notaAtualizada);
     //criar um alerDialog para mudar o conteúdo
-    _loadNotas(
+    showDialog(
       context: context,
-      builder: (context)=>
-      AlertDialog(
+      builder: (context) => AlertDialog(
         title: Text("Atualizar Nota"),
         content: TextField(
           controller: TextEditingController(text: nota.conteudo),
-          onChanged: (value){
+          onChanged: (value) {
             notaAtualizada = Nota(id: nota.id, titulo: nota.titulo, conteudo: value);
           },
         ),
         actions: [
-          TextButton(onPressed: (){
-            Navigator.of(context).pop();
-            _dbHelper.updateNota(notaAtualizada);
-            _loadNotas();
-          },
-          child: Text("Atualizar"))
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _dbHelper.updateNota(notaAtualizada);
+              _loadNotas();
+            },
+            child: Text("Atualizar"),
+          ),
         ],
-      )
+      ),
     );
   }
 
