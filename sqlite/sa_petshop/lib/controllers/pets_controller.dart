@@ -1,5 +1,4 @@
 import 'package:sa_petshop/database/db_helper.dart';
-
 import '../models/pet_model.dart';
 
 class PetsController {

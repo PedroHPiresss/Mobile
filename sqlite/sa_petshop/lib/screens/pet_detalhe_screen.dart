@@ -55,55 +55,82 @@ class _PetDetalheScreenState extends State<PetDetalheScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(title: Text("Detalhes do Pet"),),
-      body: _isLoading // carrega as informaç~eos ao inicar a tela
-        ? Center(child: CircularProgressIndicator(),)
-        : _consultas.length == 0 // sen não tiver pet criado -- erro ao carregar a página
-        ? Center(child: Text("Erro ao Carregar o Pet"),)
-        : Padding( // constrói as info do pet
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Nome: ${_pet!.nome}", style: TextStyle(fontSize: 20),),
-              Text("Raça: ${_pet!.raca}"),
-              Text("Dono: ${_pet!.nomeDono}"),
-              Text("Telefone: ${_pet!.telefoneDono}"),
-              Divider(),
-              Text("Consultas:"),
-              _consultas.length==0 // verifica se tem consultas 
-              ? Center(child: Text("Não Existe consultas Cadastradas"),)
-              : Expanded(child: ListView.builder( // preenche a lista com as consultas do pet
-                itemCount: _consultas.length,
-                itemBuilder: (context,index){
-                  final consulta = _consultas[index];
-                  return ListTile(
-                    title: Text(consulta.tipoServico),
-                    subtitle: Text(consulta.dataHoraFormata),
-                    trailing: IconButton(
-                      onPressed: ()=>_deleteConsulta(consulta.id!), 
-                      icon: Icon(Icons.delete)),
-                    //onTap -> função par ver detalhes da consulta,
-                  );
-                }))
-            ],
-          ),
-          
-          ),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () => Navigator.push(context, 
-        MaterialPageRoute(builder: (context)=>AddConsultaScreen(petId: widget.petId)))),
-    );
+  void _deleteConsulta(int consultaId) async {
+    try {
+      await _controllerConsultas.deleteConsulta(consultaId);
+      // Recarrega as consultas após a exclusão para atualizar a lista
+      await _loadPetConsultas(); 
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Consulta deletada com sucesso!")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erro ao deletar consulta: $e")),
+      );
+    }
   }
 
-  void _deleteConsulta(int consultaId)  async{
-    await _controllerConsultas.deleteConsulta(consultaId);
-    _loadPetConsultas();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Consulta Deletada com Sucesso")));
+    @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Detalhes do Pet"),
+      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _pet == null // Verifica se o pet foi carregado
+              ? const Center(child: Text("Erro ao carregar o Pet. Verifique o ID."))
+              : Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Nome: ${_pet!.nome}", style: const TextStyle(fontSize: 20)),
+                      Text("Raça: ${_pet!.raca}"),
+                      Text("Dono: ${_pet!.nomeDono}"),
+                      Text("Telefone: ${_pet!.telefoneDono}"),
+                      const Divider(),
+                      const Text("Consultas:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      _consultas.isEmpty
+                          ? const Center(child: Text("Não existem consultas cadastradas para este pet."))
+                          : Expanded(
+                              child: ListView.builder(
+                                itemCount: _consultas.length,
+                                itemBuilder: (context, index) {
+                                  final consulta = _consultas[index];
+                                  return Card( // Usando Card para um visual melhor
+                                    margin: const EdgeInsets.symmetric(vertical: 4),
+                                    child: ListTile(
+                                      title: Text(consulta.tipoServico),
+                                      subtitle: Text(consulta.dataHoraFormata),
+                                      trailing: IconButton(
+                                        onPressed: () => _deleteConsulta(consulta.id!),
+                                        icon: const Icon(Icons.delete, color: Colors.red),
+                                      ),
+                                      // onTap: () {
+                                      //   // Implementar navegação para detalhes da consulta, se necessário
+                                      // },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // Aguarda o retorno da tela de adicionar consulta para recarregar as consultas
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddConsultaScreen(petId: widget.petId),
+            ),
+          );
+          _loadPetConsultas(); // Recarrega as consultas quando voltar para esta tela
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }
