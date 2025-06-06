@@ -7,6 +7,15 @@ import 'package:sqflite/sqflite.dart';
 
 class PetShopDBHelper{
   static Database? _database; // objeto para criar conexões
+  //Transformando a classe em singleton ->
+  //não permite instanciar outro objeto enquanto um objeto estiver ativo
+  static final PetShopDBHelper _instance = PetShopDBHelper._internal();
+
+  //construtor do Singleton
+  PetShopDBHelper._internal();
+  factory PetShopDBHelper(){
+    return _instance;
+  }
 
   Future<Database> get database async {
     if(_database != null){
@@ -24,21 +33,26 @@ class PetShopDBHelper{
     return await openDatabase(
       path,
       version: 1,
-      onCreate: _onCreate,
+      onCreate: (db, version) async{
+        await db.execute(
+          """CREATE TABLE IF NOT EXISTS pets(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          nome TEXT NOT NULL,
+          raca TEXT NOT NULL,
+          nome_dono TEXT NOT NULL,
+          telefone_dono TEXT NOT NULL);
+          CREATE TABLE IF NOT EXISTS consultas(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          pet_id INTEGER NOT NULL,
+          data_hora TEXT NOT NULL,
+          tipo_servico TEXT NOT NULL,
+          observacao TEXT NOT NULL,
+          FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE);"""
+        );
+      },
     );
   }
 
-  Future<void> _onCreate(Database db, int version) async{
-    //criar a tabela de PETS
-    await db.execute(
-      "CREATE TABLE pets(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, raca TEXT NOT NULL, nome_dono TEXT NOT NULL, telefone_dono TEXT NOT NULL)", // cria a tabela de pets
-    );
-
-    // Criar a tabela de CONSULTAS
-    await db.execute(
-      "CREATE TABLE consultas(id INTEGER PRIMARY KEY AUTOINCREMENT, pet_id INTEGER NOT NULL, data_hora TEXT NOT NULL, tipo_servico TEXT NOT NULL, observacao TEXT, FOREIGN KEY(pet_id) REFERENCES pets(id) ON DELETE CASCADE)", // cria a tabela de consultas
-    );
-  }
 
   // Métodos CRUD para PETS
   Future<int> insertPet(Pet pet) async {

@@ -39,7 +39,7 @@ class Consulta {
   }
 
   //Formatação de data e hora em formato regional
-  String get dataHoraForamata {
+  String get dataHoraFormata {
     final formatter = DateFormat("dd/MM/yyyy HH:mm");
     return formatter.format(dataHora);
   }
