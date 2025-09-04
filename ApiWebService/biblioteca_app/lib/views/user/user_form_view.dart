@@ -1,5 +1,6 @@
 import 'package:biblioteca_app/controllers/user_controler.dart';
 import 'package:biblioteca_app/models/user_model.dart';
+import 'package:biblioteca_app/views/home_view.dart';
 import 'package:biblioteca_app/views/user/user_list_view.dart';
 import 'package:flutter/material.dart';
 
@@ -33,12 +34,14 @@ class _UserFormViewState extends State<UserFormView> {
   void _save() async{
     if(_formkey.currentState!.validate()){
       final user = UserModel(
+        //criar a id
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: _nameController.text,
         email: _emailController.text);
       await _controller.create(user);
       Navigator.pop(context);
       Navigator.pushReplacement(context,
-      MaterialPageRoute(builder: (context)=> UserListView()));
+      MaterialPageRoute(builder: (context)=> HomeView()));
     }
   }
 
@@ -81,7 +84,7 @@ class _UserFormViewState extends State<UserFormView> {
               SizedBox(height: 20,),
               ElevatedButton(
                 onPressed: widget.user == null ? _save : _update,
-                child: Text(widget.user == null ? "Salvar" : "Atualizar"))
+                child: Text(widget.user == null ? "Salvar" : "Atualizar"),)
             ],
           )),),
     );
