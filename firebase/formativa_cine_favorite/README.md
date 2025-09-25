@@ -60,7 +60,7 @@ Demonstrar o funcionamento das entidades do sistema
 
 ```
 
-2. ### Uso
+2. Uso
 Ação que os atores podem fazer
 - Usuário (User):
     - Registrar
@@ -97,3 +97,22 @@ Ação que os atores podem fazer
         ac2 --> ac7
 
 ```
+
+3. Fluxo
+Determina o caminho percorrido pelo aotr para executar uma ação
+
+- Fluxo da ação de Login
+
+```marmaid
+
+graph TD
+    A[Início] --> B{Login Usuário}
+    B --> C[Inserir Email e Senha]
+    C --> D{Validar as Credenciais}
+    D --> E[SIM]
+    D --> F[NÃO]
+    E --> G[HomePage]
+    F --> B
+
+```
+
