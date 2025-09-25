@@ -27,12 +27,28 @@ class Movie {
     };
   }
 
-  //Criar um Obj a partir dos dados da API TMDB
-  //fromMap Json => OBJ
+  //Criar um Obj a partir dos dados do firestore
+  //fabricar um OBJ a partir de um JSON
   factory Movie.fromMap(Map<String,dynamic> map){
+    double rating = 0.0;
+    try {
+      if (map.containsKey("rating") && map["rating"] != null) {
+        final r = map["rating"];
+        if (r is num) {
+          rating = r.toDouble();
+        } else if (r is String) {
+          rating = double.tryParse(r) ?? 0.0;
+        }
+      }
+    } catch (_) {
+      rating = 0.0;
+    }
+
     return Movie(
       id: map["id"], 
       title: map["title"], 
-      posterPath: map["posterPath"]);
+      posterPath: map["posterPath"],
+      rating: rating,
+    );
   }
 }
