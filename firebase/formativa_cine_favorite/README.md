@@ -116,10 +116,6 @@ graph TD
 
 ```
 
-## Prototipagem
-Link dos Protótipos
-
-
 ## Codificação
 
 - Service --> Conectar com a API
