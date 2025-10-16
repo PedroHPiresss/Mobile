@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "220257031897",
+    "project_id": "sa-somativa-hardware",
+    "storage_bucket": "sa-somativa-hardware.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220257031897:android:76854686273bfe4c43d0c8",
+        "android_client_info": {
+          "package_name": "com.example.sa_somativa_hardware"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvF7rYzjdMVpJ3ZvExZbxPipq51ut09YA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
