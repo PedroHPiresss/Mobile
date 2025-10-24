@@ -45,7 +45,6 @@ class _MapViewState extends State<MapView> {
         }
       });
     } catch (e) {
-      // Handle error silently
     }
   }
 
@@ -135,7 +134,6 @@ class _MapViewState extends State<MapView> {
                 ),
                 MarkerLayer(
                   markers: [
-                    // Workplace marker
                     Marker(
                       point: _workplaceLocation!,
                       width: 50,
@@ -146,7 +144,6 @@ class _MapViewState extends State<MapView> {
                         size: 35,
                       ),
                     ),
-                    // Current location marker (if available)
                     if (_currentLocation != null)
                       Marker(
                         point: _currentLocation!,
@@ -158,7 +155,6 @@ class _MapViewState extends State<MapView> {
                           size: 35,
                         ),
                       ),
-                    // Selected location marker
                     if (_selectedLocation != null)
                       Marker(
                         point: _selectedLocation!,

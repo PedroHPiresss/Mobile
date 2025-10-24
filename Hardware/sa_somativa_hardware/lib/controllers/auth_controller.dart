@@ -7,15 +7,13 @@ class AuthController {
 
   User? get currentUser => _auth.currentUser;
 
-  // Login with NIF and password (NIF treated as email)
   Future<void> loginWithNif(String nif, String password) async {
     await _auth.signInWithEmailAndPassword(
-      email: '$nif@nif.com', // Append domain to make it email-like
+      email: '$nif@nif.com',
       password: password,
     );
   }
 
-  // Register with NIF and password
   Future<void> registerWithNif(String nif, String password) async {
     await _auth.createUserWithEmailAndPassword(
       email: '$nif@nif.com',
@@ -28,12 +26,12 @@ class AuthController {
     await _auth.signOut();
   }
 
-  // Check if biometric is available
+
   Future<bool> isBiometricAvailable() async {
     return await _localAuth.canCheckBiometrics;
   }
 
-  // Authenticate with biometric
+
   Future<bool> authenticateBiometric() async {
     try {
       return await _localAuth.authenticate(

@@ -3,21 +3,18 @@ import 'package:sa_somativa_hardware/controllers/firestore_controller.dart';
 import 'package:sa_somativa_hardware/models/workplace.dart';
 
 class LocationController {
-  // Default workplace coordinates (São Paulo)
   static const double defaultWorkplaceLatitude = -23.5505;
   static const double defaultWorkplaceLongitude = -46.6333;
-  static const double maxDistance = 100.0; // 100 meters
+  static const double maxDistance = 100.0;
 
   final FirestoreController _firestoreController = FirestoreController();
 
   Future<bool> isWithinWorkplace() async {
-    // Check if location service is enabled
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       throw Exception('Serviço de localização desabilitado');
     }
 
-    // Check permission
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -26,15 +23,12 @@ class LocationController {
       }
     }
 
-    // Get current position
     Position position = await Geolocator.getCurrentPosition();
 
-    // Get workplace location from Firestore or use default
     Workplace? workplace = await _firestoreController.getWorkplace();
     double workplaceLat = workplace?.latitude ?? defaultWorkplaceLatitude;
     double workplaceLng = workplace?.longitude ?? defaultWorkplaceLongitude;
 
-    // Calculate distance
     double distance = Geolocator.distanceBetween(
       position.latitude,
       position.longitude,

@@ -23,7 +23,6 @@ class _HomeViewState extends State<HomeView> {
     setState(() => _isLoading = true);
 
     try {
-      // Check location
       bool isWithinWorkplace = await _locationController.isWithinWorkplace();
       if (!isWithinWorkplace) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -39,14 +38,11 @@ class _HomeViewState extends State<HomeView> {
         return;
       }
 
-      // Determine type (entry or exit)
       ClockRecord? lastRecord = await _firestoreController.getLastClockRecordToday();
       String type = (lastRecord == null || lastRecord.type == 'exit') ? 'entry' : 'exit';
 
-      // Get current position
       var position = await _locationController.getCurrentPosition();
 
-      // Create record
       String now = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
       List<String> dateTime = now.split(' ');
       ClockRecord record = ClockRecord(

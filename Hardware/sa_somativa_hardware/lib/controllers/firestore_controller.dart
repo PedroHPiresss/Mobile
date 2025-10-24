@@ -10,13 +10,11 @@ class FirestoreController {
 
   User? get currentUser => _auth.currentUser;
 
-  // Save clock record
   Future<void> saveClockRecord(ClockRecord record) async {
     if (currentUser == null) return;
     await _db.collection('clock_records').add(record.toMap());
   }
 
-  // Get last clock record for today
   Future<ClockRecord?> getLastClockRecordToday() async {
     if (currentUser == null) return null;
 
@@ -36,7 +34,6 @@ class FirestoreController {
     return null;
   }
 
-  // Get all clock records for current user
   Stream<List<ClockRecord>> getClockRecords() {
     if (currentUser == null) return Stream.value([]);
 
@@ -50,13 +47,11 @@ class FirestoreController {
             snapshot.docs.map((doc) => ClockRecord.fromMap(doc.data())).toList());
   }
 
-  // Save workplace location
   Future<void> saveWorkplace(Workplace workplace) async {
     if (currentUser == null) return;
     await _db.collection('workplaces').doc(currentUser!.uid).set(workplace.toMap());
   }
 
-  // Get workplace location
   Future<Workplace?> getWorkplace() async {
     if (currentUser == null) return null;
 
