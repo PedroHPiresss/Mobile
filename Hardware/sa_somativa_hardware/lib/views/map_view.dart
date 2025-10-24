@@ -52,7 +52,14 @@ class _MapViewState extends State<MapView> {
   void _setWorkplaceLocation() async {
     if (_selectedLocation == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Selecione um local no mapa")),
+        SnackBar(
+          content: const Text("Selecione um local no mapa"),
+          backgroundColor: Colors.red.shade600,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
       );
       return;
     }
@@ -68,11 +75,25 @@ class _MapViewState extends State<MapView> {
         _workplaceLocation = _selectedLocation;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Local de trabalho definido")),
+        SnackBar(
+          content: const Text("Local de trabalho definido"),
+          backgroundColor: Colors.green.shade600,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao definir local: $e")),
+        SnackBar(
+          content: Text("Erro ao definir local: $e"),
+          backgroundColor: Colors.red.shade600,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -84,14 +105,15 @@ class _MapViewState extends State<MapView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Registrar Local de Trabalho"),
-        actions: [
-          IconButton(
-            onPressed: _isLoading ? null : _setWorkplaceLocation,
-            icon: _isLoading
-                ? const CircularProgressIndicator()
-                : const Icon(Icons.save),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.orange.shade700, Colors.orange.shade500],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ],
+        ),
       ),
       body: _workplaceLocation == null
           ? const Center(child: CircularProgressIndicator())
@@ -152,6 +174,18 @@ class _MapViewState extends State<MapView> {
                 ),
               ],
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _isLoading ? null : _setWorkplaceLocation,
+        backgroundColor: Colors.orange.shade600,
+        foregroundColor: Colors.white,
+        elevation: 6,
+        child: _isLoading
+            ? const CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )
+            : const Icon(Icons.save),
+      ),
     );
   }
 }

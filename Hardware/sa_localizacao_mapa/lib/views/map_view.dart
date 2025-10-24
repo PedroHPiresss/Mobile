@@ -38,7 +38,7 @@ class _MapViewState extends State<MapView> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(_erro!))
       );
-    } finally{ //executa de qualquer jeito (com erro ou sem erro)
+    } finally{ //executa de qualquer jeito (com ou sem erro)
       setState(() {
         _isLoading = false;
       });
