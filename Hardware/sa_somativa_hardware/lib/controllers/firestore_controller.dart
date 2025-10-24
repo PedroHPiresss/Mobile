@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sa_somativa_hardware/models/clock_record.dart';
+import 'package:sa_somativa_hardware/models/workplace.dart';
 import 'package:intl/intl.dart';
 
 class FirestoreController {
@@ -47,5 +48,23 @@ class FirestoreController {
         .snapshots()
         .map((snapshot) =>
             snapshot.docs.map((doc) => ClockRecord.fromMap(doc.data())).toList());
+  }
+
+  // Save workplace location
+  Future<void> saveWorkplace(Workplace workplace) async {
+    if (currentUser == null) return;
+    await _db.collection('workplaces').doc(currentUser!.uid).set(workplace.toMap());
+  }
+
+  // Get workplace location
+  Future<Workplace?> getWorkplace() async {
+    if (currentUser == null) return null;
+
+    DocumentSnapshot snapshot = await _db.collection('workplaces').doc(currentUser!.uid).get();
+
+    if (snapshot.exists) {
+      return Workplace.fromMap(snapshot.data() as Map<String, dynamic>);
+    }
+    return null;
   }
 }

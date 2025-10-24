@@ -3,6 +3,7 @@ import 'package:sa_somativa_hardware/controllers/auth_controller.dart';
 import 'package:sa_somativa_hardware/controllers/firestore_controller.dart';
 import 'package:sa_somativa_hardware/controllers/location_controller.dart';
 import 'package:sa_somativa_hardware/models/clock_record.dart';
+import 'package:sa_somativa_hardware/views/map_view.dart';
 import 'package:intl/intl.dart';
 
 class HomeView extends StatefulWidget {
@@ -27,15 +28,6 @@ class _HomeViewState extends State<HomeView> {
       if (!isWithinWorkplace) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Você não está no local de trabalho")),
-        );
-        return;
-      }
-
-      // Biometric authentication
-      bool authenticated = await _authController.authenticateBiometric();
-      if (!authenticated) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Autenticação biométrica falhou")),
         );
         return;
       }
@@ -102,17 +94,43 @@ class _HomeViewState extends State<HomeView> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _clockIn,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                textStyle: const TextStyle(fontSize: 20),
-              ),
-              child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text("Bater Ponto"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const MapView()),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      textStyle: const TextStyle(fontSize: 16),
+                    ),
+                    child: const Text("Registrar Local de Trabalho"),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _clockIn,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      textStyle: const TextStyle(fontSize: 16),
+                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text("Bater Ponto"),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 40),
+            const Text(
+              "Histórico de Pontos",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
             StreamBuilder<List<ClockRecord>>(
               stream: _firestoreController.getClockRecords(),
               builder: (context, snapshot) {
@@ -123,9 +141,13 @@ class _HomeViewState extends State<HomeView> {
                       itemCount: records.length,
                       itemBuilder: (context, index) {
                         ClockRecord record = records[index];
-                        return ListTile(
-                          title: Text("${record.type == 'entry' ? 'Entrada' : 'Saída'} - ${record.date} ${record.time}"),
-                          subtitle: Text("Lat: ${record.latitude.toStringAsFixed(4)}, Lng: ${record.longitude.toStringAsFixed(4)}"),
+                        return Card(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          child: ListTile(
+                            title: Text("${record.type == 'entry' ? 'Entrada' : 'Saída'}"),
+                            subtitle: Text("${record.date} ${record.time}"),
+                            trailing: Text("Lat: ${record.latitude.toStringAsFixed(4)}\nLng: ${record.longitude.toStringAsFixed(4)}"),
+                          ),
                         );
                       },
                     ),
